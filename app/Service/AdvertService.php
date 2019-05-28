@@ -51,7 +51,7 @@ class AdvertService
      */
     private function filterByEngine(int $engine_id = null): Builder
     {
-        return is_null($engine_id) ? $this->builder : $this->builder->where('engine_id', $engine_id);
+        return $engine_id === null ? $this->builder : $this->builder->where('engine_id', $engine_id);
     }
 
     /**
@@ -60,7 +60,7 @@ class AdvertService
      */
     private function filterByTransmission(int $transmission_id = null): Builder
     {
-        return is_null($transmission_id) ? $this->builder : $this->builder->where('transmission_id', $transmission_id);
+        return $transmission_id === null ? $this->builder : $this->builder->where('transmission_id', $transmission_id);
     }
 
     /**
@@ -69,7 +69,7 @@ class AdvertService
      */
     private function filterByMark(int $mark_id = null): Builder
     {
-        return is_null($mark_id) ? $this->builder : $this->builder->where('mark_id', $mark_id);
+        return $mark_id === null ? $this->builder : $this->builder->where('mark_id', $mark_id);
     }
 
     /**
