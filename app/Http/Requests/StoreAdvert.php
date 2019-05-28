@@ -11,10 +11,9 @@ class StoreAdvert extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
-//        return false;
     }
 
     /**
@@ -22,7 +21,7 @@ class StoreAdvert extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required|max:255',
@@ -36,7 +35,7 @@ class StoreAdvert extends FormRequest
     /**
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'name.required' => 'Поле "Название" обязательно для заполнения',

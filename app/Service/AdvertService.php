@@ -90,7 +90,7 @@ class AdvertService
 
     /**
      * @param int $id
-     * @return Collection|null
+     * @return Advert|null
      */
     public function find(int $id): ?Advert
     {

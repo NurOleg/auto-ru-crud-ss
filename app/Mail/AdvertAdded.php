@@ -12,7 +12,7 @@ class AdvertAdded extends Mailable
 {
     protected $advert;
     protected $link;
-    public const MAIL_TO = 'oleg.nur94@gmail.com';
+    public const MAIL_TO = 'olga.ogurtsova@simple-solution.biz';
 
     use Queueable, SerializesModels;
 

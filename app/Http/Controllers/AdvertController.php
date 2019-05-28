@@ -17,6 +17,9 @@ use Illuminate\Http\JsonResponse;
 
 class AdvertController extends Controller
 {
+    /**
+     * @var AdvertService
+     */
     private $advertService;
 
     /**
@@ -118,8 +121,9 @@ class AdvertController extends Controller
      */
     public function getForm(int $id = null): View
     {
-        $advert = !is_null($id)
-            ? $this->advertService
+        $advert = $id !== null
+            ? $this
+                ->advertService
                 ->find($id)
             : null;
 
