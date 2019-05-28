@@ -11,9 +11,9 @@ class CreateAdvertsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('adverts', function (Blueprint $table) {
+        Schema::create('adverts', static function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->integer('year');
@@ -28,7 +28,7 @@ class CreateAdvertsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('adverts');
     }

@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section('content')
 
-    <h1>{{!is_null($advert) ? 'Редактривание объявления №' . $advert->id : 'Добавление объявления' }}</h1>
-    <form action="/{{$action}}">
+    <h1>{{$advert !== null ? 'Редактривание объявления №' . $advert->id : 'Добавление объявления' }}</h1>
+    <form action="/{{$action}}" id="advert">
 
         {{csrf_field()}}
 
-        @if(!is_null($advert))
+        @if($advert !== null)
             <input type="hidden" name="id" value="{{$advert->id}}">
         @endif
 
@@ -20,7 +20,7 @@
             <select name="year" id="year">
                 @for($year = $year_min; $year <= $year_max; $year++)
                     <option value="{{$year}}"
-                            {{ !is_null($advert) && $advert->year === $year
+                            {{ $advert !== null && $advert->year === $year
                             ? 'selected="selected"'
                             : '' }}
                     >{{$year}}</option>
@@ -34,7 +34,7 @@
                 <option value="">Не выбрано</option>
                 @foreach($marks as $mark)
                     <option value="{{$mark->id}}"
-                            {{ !is_null($advert) && $advert->mark->id === $mark->id
+                            {{ $advert !== null && $advert->mark->id === $mark->id
                             ? 'selected="selected"'
                             : '' }}
                     >{{$mark->name}}</option>
@@ -48,7 +48,7 @@
                 <option value="">Не выбрано</option>
                 @foreach($transmissions as $transmission)
                     <option value="{{$transmission->id}}"
-                            {{ !is_null($advert) && $advert->transmission->id === $transmission->id
+                            {{ $advert !== null && $advert->transmission->id === $transmission->id
                                             ? 'selected="selected"'
                                             : '' }}
                     >{{$transmission->name}}</option>
@@ -62,7 +62,7 @@
                 <option value="">Не выбрано</option>
                 @foreach($engines as $engine)
                     <option value="{{$engine->id}}"
-                            {{ !is_null($advert) && $advert->engine->id === $engine->id
+                            {{ $advert !== null && $advert->engine->id === $engine->id
                                     ? 'selected="selected"'
                                     : '' }}
                     >{{$engine->name}}</option>
@@ -71,52 +71,9 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Сохранить</button>
+
+        @if($advert !== null)
+            <a href="/delete/{{$advert->id}}" class="btn btn-danger delete" id="{{$advert->id}}">Удалить</a>
+        @endif
     </form>
-
-    <script>
-        $('form').on('submit', function (e) {
-            e.preventDefault();
-
-            let formData = new FormData($(this)[0]);
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                url: $(this).attr('action'),
-                data: formData,
-                processData: false,
-                contentType: false,
-                type: 'post',
-                success: function (response) {
-                    if (response.success === 1) {
-                        Swal.fire(
-                            'Поздравляем!',
-                            'Ваше объявление успешно размещено!',
-                            'success'
-                        )
-
-                        if ($(this).attr('action') === '/store') {
-                            $('form')[0].reset();
-                        }
-                    } else {
-                        Swal.fire({
-                            type: 'error',
-                            title: 'Ой...',
-                            text: response.message,
-                        })
-                    }
-                },
-                error: function (response) {
-                    let errors = response.responseJSON.errors;
-                    console.log(typeof errors);
-                    $.each(errors, function (element, errorText) {
-                        $('<p style="color: red">' + errorText + '</p>').insertAfter('label[for="' + element + '"]');
-                    });
-                }
-            });
-        });
-    </script>
 @endsection

@@ -11,9 +11,9 @@ class InitAdvertForeignKeys extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('adverts', function (Blueprint $table) {
+        Schema::table('adverts', static function (Blueprint $table) {
 
             $table->bigInteger('mark_id')
                 ->nullable(false)
@@ -50,7 +50,7 @@ class InitAdvertForeignKeys extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }

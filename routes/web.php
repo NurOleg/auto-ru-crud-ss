@@ -24,3 +24,5 @@ Route::get('/advert-form/{id?}', 'AdvertController@getForm')->name('form');
 Route::post('/store', 'AdvertController@store');
 
 Route::post('/edit', 'AdvertController@edit');
+
+Route::post('/delete/{id}', 'AdvertController@delete');

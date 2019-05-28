@@ -2,7 +2,7 @@
 @section('content')
 
     <h1>Объявления о продаже автомобилей</h1>
-    <form method="post">
+    <form method="post" id="filter">
 
         {{csrf_field()}}
 
@@ -94,24 +94,6 @@
         @endif
     </div>
     <script>
-        $('form').on('submit', function (e) {
-            e.preventDefault();
-            let formData = new FormData($(this)[0]);
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                data: formData,
-                processData: false,
-                contentType: false,
-                type: 'post',
-                success: function (response) {
-                    $('#adverts').html('').html(response);
-                }
-            });
-        });
     </script>
 @endsection

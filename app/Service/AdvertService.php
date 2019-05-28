@@ -10,6 +10,8 @@ namespace App\Service;
 
 use App\Advert;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class AdvertService
 {
@@ -24,9 +26,9 @@ class AdvertService
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
-    private function getBuilder()
+    private function getBuilder(): Builder
     {
         return Advert::query();
     }
@@ -36,9 +38,9 @@ class AdvertService
      * @param int $yearTo
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    private function filterByYear(int $yearFrom = Advert::MAX_YEAR, int $yearTo = null)
+    private function filterByYear(int $yearFrom = Advert::MIN_YEAR, int $yearTo = null): Builder
     {
-        return is_null($yearTo)
+        return $yearTo === null
             ? $this->builder->where('year', '>=', $yearFrom)
             : $this->builder->whereBetween('year', [$yearFrom, $yearTo]);
     }
@@ -47,7 +49,7 @@ class AdvertService
      * @param int|null $engine_id
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    private function filterByEngine(int $engine_id = null)
+    private function filterByEngine(int $engine_id = null): Builder
     {
         return is_null($engine_id) ? $this->builder : $this->builder->where('engine_id', $engine_id);
     }
@@ -56,7 +58,7 @@ class AdvertService
      * @param int|null $transmission_id
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    private function filterByTransmission(int $transmission_id = null)
+    private function filterByTransmission(int $transmission_id = null): Builder
     {
         return is_null($transmission_id) ? $this->builder : $this->builder->where('transmission_id', $transmission_id);
     }
@@ -65,7 +67,7 @@ class AdvertService
      * @param int|null $mark_id
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    private function filterByMark(int $mark_id = null)
+    private function filterByMark(int $mark_id = null): Builder
     {
         return is_null($mark_id) ? $this->builder : $this->builder->where('mark_id', $mark_id);
     }
@@ -74,7 +76,7 @@ class AdvertService
      * @param Request $request
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function applyFilter(Request $request)
+    public function applyFilter(Request $request): Builder
     {
         if ($request->ajax()) {
             $this->filterByYear($request->year_from, $request->year_to);
@@ -88,9 +90,9 @@ class AdvertService
 
     /**
      * @param int $id
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+     * @return Collection|null
      */
-    public function find(int $id)
+    public function find(int $id): ?Advert
     {
         return $this->builder->with(['mark', 'engine', 'transmission'])->findOrFail($id);
     }

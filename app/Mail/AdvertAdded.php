@@ -12,6 +12,7 @@ class AdvertAdded extends Mailable
 {
     protected $advert;
     protected $link;
+    public const MAIL_TO = 'oleg.nur94@gmail.com';
 
     use Queueable, SerializesModels;
 
@@ -32,7 +33,8 @@ class AdvertAdded extends Mailable
      */
     public function build()
     {
-        return $this->from('test@example.com')
+        return $this
+            ->from('test@example.com')
             ->subject('Добавлено новое объявление!')
             ->view('mail.advert_created')
             ->with([

@@ -12,23 +12,34 @@ use App\Transmission;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 
 class AdvertController extends Controller
 {
     private $advertService;
 
+    /**
+     * AdvertController constructor.
+     * @param AdvertService $advertService
+     */
     public function __construct(AdvertService $advertService)
     {
         $this->advertService = $advertService;
     }
 
-    public function index(Request $request)
+    /**
+     * @param Request $request
+     * @return View
+     */
+    public function index(Request $request): View
     {
         $template = $request->ajax() ? 'adverts_response' : 'adverts';
 
         return view($template,
             [
-                'adverts' => $this->advertService
+                'adverts' => $this
+                    ->advertService
                     ->applyFilter($request)
                     ->with(['mark', 'engine', 'transmission'])
                     ->get(),
@@ -42,59 +53,70 @@ class AdvertController extends Controller
 
     /**
      * @param int $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return View
      */
-    public function show(int $id)
+    public function show(int $id): View
     {
         return view('advert',
             [
-                'advert' => $this->advertService
+                'advert' => $this
+                    ->advertService
                     ->find($id)
             ]);
     }
 
     /**
      * @param StoreAdvert $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return JsonResponse
      */
-    public function store(StoreAdvert $request)
+    public function store(StoreAdvert $request): JsonResponse
     {
         $advert = Advert::create($request->all());
 
         if ($advert->exists) {
-            Mail::to('oleg.nur94@gmail.com')
+            Mail::to(AdvertAdded::MAIL_TO)
                 ->send(new AdvertAdded($advert));
 
             return response()->json(['success' => 1, 'message' => 'Объявление успешно создано']);
-        } else {
-            return response()->json(['success' => 0, 'message' => 'Что-то пошло не так']);
         }
+        return response()->json(['success' => 0, 'message' => 'Что-то пошло не так']);
+
     }
 
-    public function edit(StoreAdvert $request)
+    /**
+     * @param StoreAdvert $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function edit(StoreAdvert $request): JsonResponse
     {
         $advert = Advert::find($request->id);
         $advert->fill($request->all());
 
         if ($advert->save()) {
             return response()->json(['success' => 1, 'message' => 'Объявление успешно обновлено']);
-        } else {
-            return response()->json(['success' => 0, 'message' => 'Что-то пошло не так']);
         }
+        return response()->json(['success' => 0, 'message' => 'Что-то пошло не так']);
 
-
-    }
-
-    public function delete()
-    {
 
     }
 
     /**
-     * @param int|null $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param int $id
+     * @return JsonResponse
      */
-    public function getForm(int $id = null)
+    public function delete(int $id): JsonResponse
+    {
+        if (Advert::destroy($id)) {
+            return response()->json(['success' => 1, 'message' => 'Объявление успешно удалено']);
+        }
+        return response()->json(['success' => 0, 'message' => 'Что-то пошло не так']);
+    }
+
+    /**
+     * @param int|null $id
+     * @return View
+     */
+    public function getForm(int $id = null): View
     {
         $advert = !is_null($id)
             ? $this->advertService

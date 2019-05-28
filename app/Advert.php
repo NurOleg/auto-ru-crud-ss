@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Advert extends Model
 {
-    const MIN_YEAR = 1990;
+    public const MIN_YEAR = 1990;
 
     public $fillable = ['name', 'year', 'mark_id', 'engine_id', 'transmission_id'];
 

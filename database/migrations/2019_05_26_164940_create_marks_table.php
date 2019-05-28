@@ -11,9 +11,9 @@ class CreateMarksTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('marks', function (Blueprint $table) {
+        Schema::create('marks', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
         });
@@ -24,7 +24,7 @@ class CreateMarksTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('marks');
     }
